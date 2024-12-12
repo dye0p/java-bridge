@@ -32,7 +32,7 @@ public class OutputView {
         System.out.println(NEXT_LINE + "최종 게임 결과");
         printMap(moveMap);
 
-        System.out.println("게임 성공 여부: " + successful);
+        System.out.println(NEXT_LINE + "게임 성공 여부: " + successful);
         System.out.println("총 시도한 횟수: " + gameCount);
     }
 
