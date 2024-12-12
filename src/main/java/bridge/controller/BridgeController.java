@@ -5,6 +5,7 @@ import bridge.BridgeMaker;
 import bridge.BridgeRandomNumberGenerator;
 import bridge.view.InputView;
 import bridge.view.OutputView;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,15 +29,34 @@ public class BridgeController {
         //게임 진행
         while (!bridgeGame.end()) {
 
-            //플레이어 칸 입력
-            for (String round : bridge) {
-                String movingCell = tryMovingCell();
-            }
+            List<String> upBridge = new ArrayList<>();
+            List<String> downBridge = new ArrayList<>();
+            List<List<String>> moveMap = new ArrayList<>();
+            moveMap.add(upBridge);
+            moveMap.add(downBridge);
 
+            //다리 길이만큼 반복
+            for (int round = 0; round < bridge.size(); round++) {
+                //플레이어 칸 입력
+                String movingCell = tryMovingCell();
+                String moveResult = bridgeGame.move(round, movingCell); //이동결과
+
+                if (movingCell.equals("U")) {
+                    upBridge.add(moveResult);
+                    downBridge.add(" ");
+                }
+
+                if (movingCell.equals("D")) {
+                    downBridge.add(moveResult);
+                    upBridge.add(" ");
+                }
+
+                outputView.printMap(moveMap);
+            }
         }
 
-
     }
+
 
     private String tryMovingCell() {
         return requestRead(inputView::readMoving);
