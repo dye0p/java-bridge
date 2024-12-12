@@ -1,6 +1,5 @@
-package bridge;
+package bridge.model;
 
-import bridge.model.GameStatus;
 import java.util.List;
 
 /**
