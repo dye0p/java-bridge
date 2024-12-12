@@ -14,10 +14,14 @@ public class BridgeController {
     private final InputView inputView;
     private final OutputView outputView;
     private List<List<String>> moveMap;
+    private int gameCount;
+    private String successful;
 
     public BridgeController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.gameCount = 0;
+        this.successful = "성공";
     }
 
     public void run() {
@@ -29,11 +33,16 @@ public class BridgeController {
 
         //게임 진행
         playGame(bridgeGame);
+
+        if (moveMap.get(0).contains("X") || moveMap.get(1).contains("X")) {
+            successful = "실패";
+        }
     }
 
     private void playGame(BridgeGame bridgeGame) {
         while (!bridgeGame.isEnd()) { //종료 상태가 될 때 까지 진행
 
+            gameCount++;
             moveMap = new ArrayList<>();
             List<String> upBridge = new ArrayList<>();
             List<String> downBridge = new ArrayList<>();
