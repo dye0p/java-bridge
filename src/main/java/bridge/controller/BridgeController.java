@@ -28,66 +28,83 @@ public class BridgeController {
         outputView.printWellComeMessage();
         List<String> bridge = tryCreateBridge();
 
-        //새로운 게임 생성
         BridgeGame bridgeGame = new BridgeGame(bridge);
-
-        //게임 진행
         playGame(bridgeGame);
-
-        if (moveMap.get(0).contains("X") || moveMap.get(1).contains("X")) {
-            successful = "실패";
-        }
-
-        outputView.printResult(moveMap, successful, gameCount);
+        displayResult();
     }
 
     private void playGame(BridgeGame bridgeGame) {
-        while (!bridgeGame.isEnd()) { //종료 상태가 될 때 까지 진행
-
+        while (!bridgeGame.isEnd()) {
             gameCount++;
-            moveMap = new ArrayList<>();
-            List<String> upBridge = new ArrayList<>();
-            List<String> downBridge = new ArrayList<>();
+            initializeMoveMap();
 
-            moveMap.add(upBridge);
-            moveMap.add(downBridge);
-
-            //다리 길이만큼 반복
-            for (int round = 0; round < bridgeGame.getBridge().size(); round++) {
-                //플레이어 칸 입력
-                String movingCell = tryMovingCell();
-                String moveResult = bridgeGame.move(round, movingCell); //이동결과
-
-                if (movingCell.equals("U")) {
-                    upBridge.add(moveResult);
-                    downBridge.add(" ");
-                }
-
-                if (movingCell.equals("D")) {
-                    downBridge.add(moveResult);
-                    upBridge.add(" ");
-                }
-
-                //현재 결과 출력
-                outputView.printMap(moveMap);
-
-                //재시작 입력 여부
-                if (moveResult.equals("X")) {
-                    String gameCommand = tryGameCommand();
-
-                    if (bridgeGame.retry(gameCommand)) {
-                        playGame(bridgeGame);
-                    }
-
-                    //종료
-                    bridgeGame.end();
-                    break;
-                }
-            }
+            runRound(bridgeGame);
             bridgeGame.end();
         }
     }
 
+    private void initializeMoveMap() {
+        List<String> upBridge = new ArrayList<>();
+        List<String> downBridge = new ArrayList<>();
+
+        moveMap = new ArrayList<>();
+        moveMap.add(upBridge);
+        moveMap.add(downBridge);
+    }
+
+    private void runRound(BridgeGame bridgeGame) {
+        for (int round = 0; round < bridgeGame.getBridge().size(); round++) {
+            String movingCell = tryMovingCell();
+            String moveResult = bridgeGame.move(round, movingCell);
+
+            createCurrentMoveMap(movingCell, moveResult);
+            outputView.printMap(moveMap);
+
+            if (isFail(moveResult)) {
+                String gameCommand = tryGameCommand();
+                canRetry(bridgeGame, gameCommand);
+                break;
+            }
+        }
+    }
+
+    private void createCurrentMoveMap(String movingCell, String moveResult) {
+        if (movingCell.equals("U")) {
+            moveMap.get(0).add(moveResult);
+            moveMap.get(1).add(" ");
+        }
+
+        if (movingCell.equals("D")) {
+            moveMap.get(1).add(moveResult);
+            moveMap.get(0).add(" ");
+        }
+    }
+
+    private boolean isFail(String moveResult) {
+        return moveResult.equals("X");
+    }
+
+    private void canRetry(BridgeGame bridgeGame, String gameCommand) {
+        if (bridgeGame.retry(gameCommand)) {
+            playGame(bridgeGame);
+        }
+        bridgeGame.end();
+    }
+
+    private void displayResult() {
+        successJudgement();
+        outputView.printResult(moveMap, successful, gameCount);
+    }
+
+    private void successJudgement() {
+        if (isNotSuccessful()) {
+            successful = "실패";
+        }
+    }
+
+    private boolean isNotSuccessful() {
+        return moveMap.get(0).contains("X") || moveMap.get(1).contains("X");
+    }
 
     private List<String> tryCreateBridge() {
         return requestRead(() -> {
