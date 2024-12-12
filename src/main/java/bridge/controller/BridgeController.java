@@ -13,6 +13,7 @@ public class BridgeController {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private List<List<String>> moveMap;
 
     public BridgeController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -27,16 +28,21 @@ public class BridgeController {
         BridgeGame bridgeGame = new BridgeGame(bridge);
 
         //게임 진행
-        while (!bridgeGame.end()) {
+        playGame(bridgeGame);
+    }
 
+    private void playGame(BridgeGame bridgeGame) {
+        while (!bridgeGame.isEnd()) { //종료 상태가 될 때 까지 진행
+
+            moveMap = new ArrayList<>();
             List<String> upBridge = new ArrayList<>();
             List<String> downBridge = new ArrayList<>();
-            List<List<String>> moveMap = new ArrayList<>();
+
             moveMap.add(upBridge);
             moveMap.add(downBridge);
 
             //다리 길이만큼 반복
-            for (int round = 0; round < bridge.size(); round++) {
+            for (int round = 0; round < bridgeGame.getBridge().size(); round++) {
                 //플레이어 칸 입력
                 String movingCell = tryMovingCell();
                 String moveResult = bridgeGame.move(round, movingCell); //이동결과
@@ -51,14 +57,24 @@ public class BridgeController {
                     upBridge.add(" ");
                 }
 
+                //현재 결과 출력
                 outputView.printMap(moveMap);
 
+                //재시작 입력 여부
                 if (moveResult.equals("X")) {
                     String gameCommand = tryGameCommand();
+
+                    if (bridgeGame.retry(gameCommand)) {
+                        playGame(bridgeGame);
+                    }
+
+                    //종료
+                    bridgeGame.end();
+                    break;
                 }
             }
+            bridgeGame.end();
         }
-
     }
 
 
