@@ -27,9 +27,19 @@ public class BridgeController {
 
         //게임 진행
         while (!bridgeGame.end()) {
+
+            //플레이어 칸 입력
+            for (String round : bridge) {
+                String movingCell = tryMovingCell();
+            }
+
         }
 
 
+    }
+
+    private String tryMovingCell() {
+        return requestRead(inputView::readMoving);
     }
 
     private List<String> tryCreateBridge() {
