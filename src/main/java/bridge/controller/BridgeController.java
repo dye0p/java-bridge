@@ -1,7 +1,10 @@
 package bridge.controller;
 
+import bridge.BridgeMaker;
+import bridge.BridgeRandomNumberGenerator;
 import bridge.view.InputView;
 import bridge.view.OutputView;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class BridgeController {
@@ -16,12 +19,17 @@ public class BridgeController {
 
     public void run() {
         outputView.printWellComeMessage();
-        int bridgeSize = tryCreateBridge();
+        List<String> bridge = tryCreateBridge();
 
     }
 
-    private int tryCreateBridge() {
-        return requestRead(inputView::readBridgeSize);
+    private List<String> tryCreateBridge() {
+        return requestRead(() -> {
+            int bridgeSize = inputView.readBridgeSize();
+
+            BridgeMaker bridgeMaker = new BridgeMaker(new BridgeRandomNumberGenerator());
+            return bridgeMaker.makeBridge(bridgeSize);
+        });
     }
 
     private <T> T requestRead(Supplier<T> supplier) {
