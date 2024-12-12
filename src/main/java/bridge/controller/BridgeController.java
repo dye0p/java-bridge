@@ -52,15 +52,15 @@ public class BridgeController {
                 }
 
                 outputView.printMap(moveMap);
+
+                if (moveResult.equals("X")) {
+                    String gameCommand = tryGameCommand();
+                }
             }
         }
 
     }
 
-
-    private String tryMovingCell() {
-        return requestRead(inputView::readMoving);
-    }
 
     private List<String> tryCreateBridge() {
         return requestRead(() -> {
@@ -69,6 +69,14 @@ public class BridgeController {
             BridgeMaker bridgeMaker = new BridgeMaker(new BridgeRandomNumberGenerator());
             return bridgeMaker.makeBridge(bridgeSize);
         });
+    }
+
+    private String tryMovingCell() {
+        return requestRead(inputView::readMoving);
+    }
+
+    private String tryGameCommand() {
+        return requestRead(inputView::readGameCommand);
     }
 
     private <T> T requestRead(Supplier<T> supplier) {
