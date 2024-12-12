@@ -37,6 +37,8 @@ public class BridgeController {
         if (moveMap.get(0).contains("X") || moveMap.get(1).contains("X")) {
             successful = "실패";
         }
+
+        outputView.printResult(moveMap, successful, gameCount);
     }
 
     private void playGame(BridgeGame bridgeGame) {
