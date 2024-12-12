@@ -21,7 +21,15 @@ public class BridgeGame {
      * <p>
      * 이동을 위해 필요한 메서드의 반환 타입(return type), 인자(parameter)는 자유롭게 추가하거나 변경할 수 있다.
      */
-    public void move() {
+    public String move(int round, String movingCell) {
+        //해당 라운드에 해당 하는 다리와 이동할 칸을 비교한다.
+        String bridgeCell = bridge.get(round);
+
+        if (bridgeCell.equals(movingCell)) {
+            return "O";
+        }
+
+        return "X";
     }
 
     /**
